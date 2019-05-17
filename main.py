@@ -48,21 +48,19 @@ def issuesTagAvaliation(issueTextString, tagsList):
     return False
 
 if __name__ == "__main__":
-    jsonPages = json.load(open('urls.json'))
+    jsonFile = json.load(open('urls.json'))
+    validIssue = []
 
-    for page in jsonPages['site']:
+    for page in jsonFile:
         response = requests.get(page['link'])
         issueList = getIssuesInThePage(response)
         issueDateList = getIssuesDate(response)
-        validIssue = []
 
         for i in range(0,len(issueDateList)):
             tempoDaIssueString = issueDateList[i].get_text()
             tempoDaIssueString = datetime.datetime.strptime(tempoDaIssueString, '%b %d, %Y').date()
 
             if(compareDates(tempoDaIssueString, datetime.date.today()) == False):
-                print(issueList[i].getText())
                 break
             elif(issuesTagAvaliation(issueList[i], page['tags']) == True):
                 validIssue.append(issueList[i].get_text())
-        print(validIssue)
